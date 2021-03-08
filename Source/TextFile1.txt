@@ -1,0 +1,36 @@
+
+SAKER ATT TÄNKA PÅ:
+- Train (2st) / Hur många passagerare per tåg?
+- Schedule för varje tåg
+- Tidsschema
+- Control Tower Mr.Carlos (Main thread?)
+- Tracks (2 endstations, 2 inbetween) två separata tracks
+- Bommar / - ETC system / Switches (Mr.Carlsos kontrollerar detta)
+- Passagerare (Lista med namn?)
+- Vart går passagerare på/av?
+- Om ett tåg redan är på en station så måste deta andra tåget vid en switch.
+
+
+******************************************
+Part 1:
+- Skapa fluent API?
+- Interfaces?
+- Arv?
+- Classer?
+- Metoder?
+
+FLUENT API EXAMPLE
+var travelPlan1 = new TrainPlaner(train1)
+.FollowSchedule(scheduleTrain1)
+.LevelCrossing()
+.CloseAt("10:23")
+.OpenAt("10:25")
+.SetSwitch(switch1, SwitchDirection.Left)
+.SetSwitch(switch2, SwitchDirection.Right)
+.ToPlan();
+
+var travelPlan2 = new TrainPlaner(train2)
+.StartTrainAt("10:23")
+.StopTrainAt("10:53")
+.ToPlan();
+******************************************
