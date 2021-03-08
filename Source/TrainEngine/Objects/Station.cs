@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Objects
+namespace TrainEngine.Objects
 {
     public class Station
     {
