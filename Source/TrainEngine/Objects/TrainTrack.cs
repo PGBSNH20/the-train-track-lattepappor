@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace TrainEngine.Objects
 {
-    public class Station
+    public class TrainTrack
     {
-        private string _name;
         private int _id;
-        private List<Schedule> _schedule;
+        private bool isOccuppied;
+
+
     }
 }

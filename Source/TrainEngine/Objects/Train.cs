@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Objects
+namespace TrainEngine.Objects
 {
     public class Train
     {
