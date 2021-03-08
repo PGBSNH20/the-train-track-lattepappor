@@ -1,8 +1,8 @@
 ﻿using System;
 
-public class Class1
+public class Station
 {
-	public Class1()
-	{
-	}
+    private string _name;
+    private int _id;
+    private List<Schedule> _schedule;
 }
