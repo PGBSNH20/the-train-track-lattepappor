@@ -14,13 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project Description", "Proj
 		Pseudo description.txt = Pseudo description.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Objects", "Objects", "{91B8C58C-5A68-441D-B8A7-DD88A505A133}"
-	ProjectSection(SolutionItems) = preProject
-		Schedule.cs = Schedule.cs
-		Station.cs = Station.cs
-		Train.cs = Train.cs
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
