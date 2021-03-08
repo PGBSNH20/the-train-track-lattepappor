@@ -1,8 +1,7 @@
 ﻿using System;
 
-public class Class1
+public class Schedule
 {
-	public Class1()
-	{
-	}
+	private Dictionary<Station, DateTime> departure;
+	private Dictionary<Station, DateTime> arrival;
 }
