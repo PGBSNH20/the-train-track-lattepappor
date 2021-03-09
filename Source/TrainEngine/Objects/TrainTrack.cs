@@ -8,7 +8,5 @@ namespace TrainEngine.Objects
     {
         private int _id;
         private bool isOccuppied;
-
-
     }
 }
