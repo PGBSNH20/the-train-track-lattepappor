@@ -10,6 +10,6 @@ namespace TrainEngine.Objects
         public int TopSpeed { get; set; }
         public bool Operated { get; set; }
 
-        public List<Passenger> Passengers = new List<Passenger>();
+        public List<Passenger> Passengers = new ();
     }
 }

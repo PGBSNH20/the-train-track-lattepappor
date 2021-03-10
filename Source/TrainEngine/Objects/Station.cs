@@ -10,6 +10,6 @@ namespace TrainEngine.Objects
         public bool IsEndStation { get; set; }
         public Train? CurrentTrain { get; set; }
 
-        public List<Passenger> WaitingPassangers = new List<Passenger>();
+        public List<Passenger> WaitingPassangers = new ();
     }
 }

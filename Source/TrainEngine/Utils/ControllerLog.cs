@@ -11,14 +11,14 @@ namespace TrainEngine.Utils
      */
     public class ControllerLog
     {
-        public static void AddSchedule(Train train, Schedule schedule)
-        {
+        //public static void AddSchedule(Train train, Schedule schedule)
+        //{
 
-        }
+        //}
 
-        public static void CrossingOpenedStamp(TrainTrack track)
-        {
+        //public static void CrossingOpenedStamp(TrainTrack track)
+        //{
 
-        }
+        //}
     }
 }
