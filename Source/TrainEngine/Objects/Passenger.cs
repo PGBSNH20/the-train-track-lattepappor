@@ -6,9 +6,7 @@ namespace TrainEngine.Objects
 {
     public class Passenger
     {
-        private string _name;
-        private string _lastName;
-        private int _age;
-        private int _id;
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

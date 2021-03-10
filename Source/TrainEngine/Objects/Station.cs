@@ -5,9 +5,11 @@ namespace TrainEngine.Objects
 {
     public class Station
     {
-        private string _name;
-        private int _id;
-        private List<Schedule> _schedule;
-        //Passenger list? För att see vilka som väntar där
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsEndStation { get; set; }
+        public Train? CurrentTrain { get; set; }
+
+        public List<Passenger> WaitingPassangers = new List<Passenger>();
     }
 }
