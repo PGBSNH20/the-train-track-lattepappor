@@ -7,7 +7,7 @@ namespace TrainEngine
 {
         public interface ITrainPlanner
         {
-            public ITrainPlanner CreateTimeTable(string departure, string arrival, int trainId, int stationId);
+            //public ITrainPlanner CreateTimeTable(string departure, string arrival, int trainId, int stationId);
             public ITrainPlanner LoadTimeTable(string path);
             public TrainPlanner ToPlan();
         }
