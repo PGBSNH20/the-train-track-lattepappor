@@ -17,7 +17,7 @@ namespace TrainEngine.Objects
 
         //public ITrainPlanner CreateTimeTable(string departure, string arrival, int trainId, int stationId)
         //{
-        //    TimeTable table = new (){ DepartureTime = departure != null ? DateTime.Parse(departure) : null, ArrivalTime = arrival != null ? DateTime.Parse(arrival) : null, TrainId = trainId, StationId = stationId };
+        //    TimeTable table = new() { DepartureTime = departure != null ? DateTime.Parse(departure) : null, ArrivalTime = arrival != null ? DateTime.Parse(arrival) : null, TrainId = trainId, StationId = stationId };
         //    Table.Add(table);
         //    return this;
         //}
