@@ -15,12 +15,12 @@ namespace TrainEngine.Objects
             Train = train;
         }
 
-        //public ITrainPlanner CreateTimeTable(string departure, string arrival, int trainId, int stationId)
-        //{
-        //    TimeTable table = new() { DepartureTime = departure != null ? DateTime.Parse(departure) : null, ArrivalTime = arrival != null ? DateTime.Parse(arrival) : null, TrainId = trainId, StationId = stationId };
-        //    Table.Add(table);
-        //    return this;
-        //}
+        public ITrainPlanner CreateTimeTable(List<TimeTable> timeTables)
+        {
+            Table = timeTables.Where(x => x.TrainId == Train.Id).ToList();
+
+            return this;
+        }
 
         public TrainPlanner ToPlan()
         {

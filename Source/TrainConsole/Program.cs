@@ -13,19 +13,16 @@ namespace TrainConsole
             List<Passenger> passengers = FileIO.DeserializePassenger(@"Data\passengers.txt", ';', ':');
             List<TimeTable> timeTables = FileIO.DeserializeTimeTables(@"Data\timetable.txt", ',');
 
-            foreach (var line in timeTables)
-            {
-                Console.WriteLine(line.ArrivalTime + " " + line.DepartureTime);
-            }
+            Train train1 = trains[2];
 
-            Console.WriteLine("Train track!");
+            TrainPlanner trainPlanner1 = new TrainPlanner(train1).CreateTimeTable(timeTables).ToPlan();
+
             // Step 1:
             // Parse the traintrack (Data/traintrack.txt) using ORM (see suggested code)
             // Parse the trains (Data/trains.txt)
 
             // Step 2:
             //Make the trains run in treads
-            Train train1 = new Train(1, "Lapplandståget", 50, true);
 
             //TrainPlanner plan1 = new TrainPlanner(train1).LoadTimeTable(@"Data\timetable.txt").ToPlan();
 
