@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TrainEngine.Objects
 {
-    class FileIO
+    public class FileIO
     {
         public static List<Train> DeserializeTrains(string filePath, char separator)
         {

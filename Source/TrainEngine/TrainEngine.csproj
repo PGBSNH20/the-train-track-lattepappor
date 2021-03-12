@@ -5,11 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\passengers.txt" />
+    <None Remove="Data\stations.txt" />
     <None Remove="Data\timetable.txt" />
+    <None Remove="Data\trains.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Data\passengers.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\stations.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\timetable.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\trains.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

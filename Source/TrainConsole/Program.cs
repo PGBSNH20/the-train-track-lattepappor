@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TrainEngine.Objects;
 
 namespace TrainConsole
@@ -7,6 +8,10 @@ namespace TrainConsole
     {
         static void Main(string[] args)
         {
+            List<Train> trains = FileIO.DeserializeTrains(@"Data\trains.txt", ',');
+            List<Station> stations = FileIO.DeserializeStations(@"Data\stations.txt", '|');
+            List<Passenger> passengers = FileIO.DeserializePassenger(@"Data\passengers.txt", ';', ':');
+
             Console.WriteLine("Train track!");
             // Step 1:
             // Parse the traintrack (Data/traintrack.txt) using ORM (see suggested code)
