@@ -64,7 +64,6 @@ namespace TrainEngine.Objects
             return timeTableList;
         }
 
-
         public static List<Passenger> DeserializePassenger(string filePath, char separator, char separator1)
         {
             string[] passengers;
@@ -78,8 +77,35 @@ namespace TrainEngine.Objects
                 string name = parts[1];
                 passengerList.Add(new Passenger(id, name));
             }
-
             return passengerList;
         }
+
+        public static TrainPlanner Save(TrainPlanner trainPlanner)
+        {
+            return trainPlanner;
+        }
+
+
+
+
+
+        //    public void SaveTravelPlan(TrainPlanner trainPlanner)
+        //{
+        //    trainPlanner = new();
+
+        //    var txt = new StringBuilder();
+
+        //    foreach (Product product in productList)
+        //    {
+        //        var title = product.Title;
+        //        var description = product.Description;
+        //        var price = product.Price;
+        //        var image = product.Image;
+
+        //        var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',', '.'), image);
+        //        txt.AppendLine(newLine);
+        //    }
+        //    File.WriteAllText(@"C:\Windows\Temp\savedEditedProducts.csv", txt.ToString());
+        //}
     }
 }

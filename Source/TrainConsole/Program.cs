@@ -16,6 +16,12 @@ namespace TrainConsole
             Train train1 = trains[2];
 
             TrainPlanner trainPlanner1 = new TrainPlanner(train1).CreateTimeTable(timeTables).ToPlan();
+            foreach (var plan in trainPlanner1.Table)
+            {
+                Console.WriteLine("Arr: " + plan.ArrivalTime + " Dep:" + plan.DepartureTime);
+            }
+
+            //IFileIO.Save(trainPlanner1);
 
             // Step 1:
             // Parse the traintrack (Data/traintrack.txt) using ORM (see suggested code)
