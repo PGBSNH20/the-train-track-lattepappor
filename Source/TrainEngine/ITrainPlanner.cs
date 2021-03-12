@@ -7,9 +7,7 @@ namespace TrainEngine
 {
         public interface ITrainPlanner
         {
-
         public ITrainPlanner CreateTimeTable(List<TimeTable> timeTables);
-
         public TrainPlanner ToPlan();
         }
 }
