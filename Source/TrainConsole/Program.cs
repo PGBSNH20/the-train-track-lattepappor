@@ -14,12 +14,14 @@ namespace TrainConsole
             List<TimeTable> timeTables = FileIO.DeserializeTimeTables(@"Data\timetable.txt", ',');
 
             Train train1 = trains[2];
+            LevelCrossing firstCrossing = new LevelCrossing() { Id = 4, IsOccuppied = false, IsOpen = true };
 
-            TrainPlanner trainPlanner1 = new TrainPlanner(train1).CreateTimeTable(timeTables).ToPlan();
+            TrainPlanner trainPlanner1 = new TrainPlanner(train1).CreateTimeTable(timeTables).CrossingPlan(firstCrossing, "10:40", "10:42").ToPlan();
             foreach (var plan in trainPlanner1.Table)
             {
                 Console.WriteLine("Arr: " + plan.ArrivalTime + " Dep:" + plan.DepartureTime);
             }
+
 
             //IFileIO.Save(trainPlanner1);
 

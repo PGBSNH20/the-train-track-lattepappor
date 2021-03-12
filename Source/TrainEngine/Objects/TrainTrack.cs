@@ -6,7 +6,17 @@ namespace TrainEngine.Objects
 {
     public class TrainTrack
     {
-        private int _id;
-        private bool isOccuppied;
+        public int Id;
+        public bool IsOccuppied;
+    }
+
+    public class LevelCrossing : TrainTrack
+    {
+        public bool IsOpen = true;
+    }
+
+    public class Switch : TrainTrack
+    {
+        public bool DirectionLeft = true;
     }
 }
