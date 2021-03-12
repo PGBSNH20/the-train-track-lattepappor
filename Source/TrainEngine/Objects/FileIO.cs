@@ -45,24 +45,25 @@ namespace TrainEngine.Objects
             return stationList;
         }
 
-        //public static List<TimeTable> DeserializeTimeTables(string filePath, char separator)
-        //{
-        //    string[] timeTables;
-        //    List<TimeTable> timeTableList = new List<TimeTable>();
-        //    timeTables = File.ReadAllLines(filePath);
+        public static List<TimeTable> DeserializeTimeTables(string filePath, char separator)
+        {
+            string[] timeTables;
+            List<TimeTable> timeTableList = new List<TimeTable>();
+            timeTables = File.ReadAllLines(filePath);
 
-        //    foreach (string lines in timeTables.Skip(1))
-        //    {
-        //        string[] parts = lines.Split(separator);
-        //        int id = int.Parse(parts[0]);
-        //        int stationId = int.Parse(parts[1]);
-        //        DateTime? departure = DateTime.TryParse(parts[2], out DateTime result) ? result : (DateTime?)null;
-        //        DateTime? arrival = DateTime.TryParse(parts[3], out DateTime result1) ? result1 : (DateTime?)null;
-        //        timeTableList.Add(new TimeTable(id, stationId, departure, arrival));
-        //    }
+            foreach (string lines in timeTables.Skip(1))
+            {
+                string[] parts = lines.Split(separator);
+                int id = int.Parse(parts[0]);
+                int stationId = int.Parse(parts[1]);
+                DateTime? departure = DateTime.TryParse(parts[2], out DateTime result) ? result : (DateTime?)null;
+                DateTime? arrival = DateTime.TryParse(parts[3], out DateTime result1) ? result1 : (DateTime?)null;
+                timeTableList.Add(new TimeTable(id, stationId, departure, arrival));
+            }
 
-        //    return timeTableList;
-        //}
+            return timeTableList;
+        }
+
 
         public static List<Passenger> DeserializePassenger(string filePath, char separator, char separator1)
         {

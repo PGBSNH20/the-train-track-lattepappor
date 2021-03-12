@@ -11,6 +11,12 @@ namespace TrainConsole
             List<Train> trains = FileIO.DeserializeTrains(@"Data\trains.txt", ',');
             List<Station> stations = FileIO.DeserializeStations(@"Data\stations.txt", '|');
             List<Passenger> passengers = FileIO.DeserializePassenger(@"Data\passengers.txt", ';', ':');
+            List<TimeTable> timeTables = FileIO.DeserializeTimeTables(@"Data\timetable.txt", ',');
+
+            foreach (var line in timeTables)
+            {
+                Console.WriteLine(line.ArrivalTime + " " + line.DepartureTime);
+            }
 
             Console.WriteLine("Train track!");
             // Step 1:
@@ -21,7 +27,7 @@ namespace TrainConsole
             //Make the trains run in treads
             Train train1 = new Train(1, "Lapplandståget", 50, true);
 
-            TrainPlanner plan1 = new TrainPlanner(train1).LoadTimeTable(@"Data\timetable.txt").ToPlan();
+            //TrainPlanner plan1 = new TrainPlanner(train1).LoadTimeTable(@"Data\timetable.txt").ToPlan();
 
             //TrainPlanner plan1 = new TrainPlanner(train1)
             //.CreateTimeTable(departure: "10:20", arrival: null, trainId: train1.Id, stationId: 1)
