@@ -34,8 +34,8 @@ namespace TrainEngine.Objects
                 string departure = columns[2] != "null" ? columns[2] : null;
                 string arrival = columns[3] != "null" ? columns[3] : null; ;
 
-                TimeTable table = new() { DepartureTime = departure != null ? DateTime.Parse(departure) : null, ArrivalTime = arrival != null ? DateTime.Parse(arrival) : null, TrainId = trainId, StationId = stationId };
-                Table.Add(table);
+                //TimeTable table = new() { DepartureTime = departure != null ? DateTime.Parse(departure) : null, ArrivalTime = arrival != null ? DateTime.Parse(arrival) : null, TrainId = trainId, StationId = stationId };
+                //Table.Add(table);
 
                 Console.WriteLine($"{trainId}, {stationId}, {departure ?? "null"}, {arrival ?? "null"}");
             }

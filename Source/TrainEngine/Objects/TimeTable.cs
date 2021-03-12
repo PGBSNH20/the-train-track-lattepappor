@@ -10,5 +10,14 @@ namespace TrainEngine.Objects
         public int StationId { get; set; }
         public DateTime? DepartureTime { get; set; }
         public DateTime? ArrivalTime { get; set; }
+
+        public TimeTable(int trainId, int stationId, DateTime? departureTime, DateTime? arrivalTime)
+        {
+            this.TrainId = trainId;
+            this.StationId = stationId;
+            this.DepartureTime = departureTime;
+            this.ArrivalTime = arrivalTime;
+        }
     }
+
 }

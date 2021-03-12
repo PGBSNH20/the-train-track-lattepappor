@@ -8,5 +8,11 @@ namespace TrainEngine.Objects
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        public Passenger(int id, string name)
+        {
+            this.Id = id;
+            this.Name = name;
+        }
     }
 }
