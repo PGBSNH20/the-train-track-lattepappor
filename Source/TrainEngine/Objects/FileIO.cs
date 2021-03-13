@@ -80,6 +80,19 @@ namespace TrainEngine.Objects
             return passengerList;
         }
 
+        public static char[][] DeserializeTrainTrack(string filePath)
+        {
+            string[] rows = File.ReadAllLines(filePath);
+
+            //split everything up into a 2d char array that we can modify later to have a visual track on screen
+            char[][] grid = new char[rows.Length][];
+            for (int y = 0; y < grid.Length; y++)
+            {
+                grid[y] = rows[y].ToCharArray(); //Write all chars from the current row to a chararray on current grid row
+            }
+            return grid;
+        }
+
         public static TrainPlanner Save(TrainPlanner trainPlanner)
         {
             return trainPlanner;
