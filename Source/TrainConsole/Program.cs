@@ -15,13 +15,10 @@ namespace TrainConsole
 
             Train train1 = trains[2];
             LevelCrossing firstCrossing = new LevelCrossing() { Id = 4, IsOccuppied = false, IsOpen = true };
+            Switch firstSwitch = new Switch { Id = 1, IsOccuppied = false, DirectionLeft = false };
+            Switch secondSwitch = new Switch { Id = 2, IsOccuppied = false, DirectionLeft = false };
 
-            TrainPlanner trainPlanner1 = new TrainPlanner(train1).CreateTimeTable(timeTables).CrossingPlan(firstCrossing, "10:40", "10:42").ToPlan();
-            foreach (var plan in trainPlanner1.Table)
-            {
-                Console.WriteLine("Arr: " + plan.ArrivalTime + " Dep:" + plan.DepartureTime);
-            }
-
+            TrainPlanner trainPlanner1 = new TrainPlanner(train1).CreateTimeTable(timeTables).CrossingPlan(firstCrossing, "10:40", "10:42").SwitchPlan(firstSwitch, "11:44", true).SwitchPlan(secondSwitch, "11:54", false).ToPlan();
 
             //IFileIO.Save(trainPlanner1);
 
