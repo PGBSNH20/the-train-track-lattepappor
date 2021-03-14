@@ -15,7 +15,7 @@ namespace TrainEngine.Objects
         public List<TimeTable> timeTables = FileIO.DeserializeTimeTables(@"Data\timetable.txt", ',');
 
         private Timer ObserverTimer;
-        private DateTime Time = new DateTime().AddHours(10).AddMinutes(40);
+        public static DateTime GlobalTime = new DateTime().AddHours(10).AddMinutes(40);
 
         public void BeginObserving()
         {
@@ -31,25 +31,27 @@ namespace TrainEngine.Objects
             trains.ForEach(x => x.Start());
         }
 
-
         private void UpdateConsole(Object src, ElapsedEventArgs e)
         {
-            Time = Time.AddMinutes(1);
+            GlobalTime = GlobalTime.AddMinutes(1);
             Console.Clear();
             TrainTrack.RefreshTrack();
+
             foreach(Train t in trains)
             {
                 TrainTrack.TrackGrid[t.GetPosition.Y][t.GetPosition.X] = 'T';
             }
-            string[] rows = new string[TrainTrack.TrackGrid.Length];
+
+            string[] rows = new string[TrainTrack.TrackGrid.Length]; //Make a string array based on the trackgrids Y-axis length
             for (int i = 0; i < rows.Length; i++)
             {
-                rows[i] = new string(TrainTrack.TrackGrid[i]);
+                rows[i] = new string(TrainTrack.TrackGrid[i]); //Make a string at current index with the char array at row index
             }
-            string track = string.Join('\n', rows);
+            string track = string.Join('\n', rows); //Make a full string of the whole track
+
             Console.WriteLine(track);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n[{this.GetType().Name}][{Time.ToString("HH:mm")}]");
+            Console.WriteLine($"\n[Mr. Carlos][{GlobalTime.ToString("HH:mm")}]");
             Console.ResetColor();
         }
     }
