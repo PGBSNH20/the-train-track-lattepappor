@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-//using TrainEngine.Objects;
 
 namespace TrainEngine.Objects
 {
     public class TrainPlanner : ITrainPlanner
     {
         public List<TimeTable> Table = new();
-        public Dictionary<Switch, (DateTime, bool)> ChangeSwitchAt = new();
+        public Dictionary<DateTime, (Switch, bool)> ChangeSwitchAt = new();
         public Train Train { get; set; }
         public LevelCrossing LevelCrossing { get; set; }
         public DateTime CrossingOpenAt { get; set; }
@@ -22,7 +20,6 @@ namespace TrainEngine.Objects
         public ITrainPlanner CreateTimeTable(List<TimeTable> timeTables)
         {
             Table = timeTables.Where(x => x.TrainId == Train.Id).ToList();
-
             return this;
         }
 
@@ -36,7 +33,7 @@ namespace TrainEngine.Objects
 
         public ITrainPlanner SwitchPlan(Switch trackSwitch, string time,  bool directionLeft)
         {
-            ChangeSwitchAt.Add(trackSwitch, (DateTime.Parse(time), directionLeft));
+            ChangeSwitchAt.Add(DateTime.Parse(time), (trackSwitch, directionLeft));
             return this;
         }
 
