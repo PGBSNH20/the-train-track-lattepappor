@@ -93,14 +93,71 @@ namespace TrainEngine.Objects
             return grid;
         }
 
-        public static TrainPlanner Save(TrainPlanner trainPlanner)
+        public static void SavePlan(TrainPlanner plan, string planName)
         {
-            return trainPlanner;
+            string path = @"C:\Windows\Temp\" + planName;
+            string timeTablePath = path + @"\timetables.txt";
+            string trainPath = path + @"\trains.txt";
+            string crossingPath = path + @"\crossing.txt";
+            string switchPath = path + @"\switch.txt";
+
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    Console.WriteLine("A plan with than name already exists.");
+                    return;
+                }
+                DirectoryInfo folder = Directory.CreateDirectory(path);
+                Console.WriteLine("Plan was created successfully at {0}.", Directory.GetCreationTime(path));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The process failed: {0}", e.ToString());
+                return;
+            }
+
+            if (!File.Exists(path))
+            {
+                using (StreamWriter swTable = File.CreateText(timeTablePath))
+                {
+                    swTable.WriteLine("trainId, stationId, departure, arrival");
+                    foreach (var timeTable in plan.Table)
+                    {
+                        swTable.WriteLine($"{timeTable.TrainId}," +
+                            $"{timeTable.StationId}," +
+                            $"{(timeTable.DepartureTime != null ? $"{timeTable.DepartureTime.Value.Hour}:{timeTable.DepartureTime.Value.Minute}" : "null")}," +
+                            $"{(timeTable.ArrivalTime != null ? $"{timeTable.ArrivalTime.Value.Hour}:{timeTable.ArrivalTime.Value.Minute}" : "null")}");
+                    }
+                }
+                using (StreamWriter swTrain = File.CreateText(trainPath))
+                {
+                    swTrain.WriteLine("Id,Name,MaxSpeed,Operated");
+                    swTrain.WriteLine($"{plan.Train.Id},{plan.Train.Name},{plan.Train.TopSpeed},{plan.Train.Operated}");
+                }
+                using (StreamWriter swCrossing = File.CreateText(crossingPath))
+                {
+                    swCrossing.WriteLine("Id,IsOpen,CloseAt,OpenAt");
+                    swCrossing.WriteLine($"{plan.LevelCrossing.Id}, {plan.LevelCrossing.IsOpen}," +
+                        $"{plan.CrossingCloseAt.Hour}:{plan.CrossingCloseAt.Minute}," +
+                        $"{plan.CrossingOpenAt.Hour}:{plan.CrossingOpenAt.Minute}");
+                }
+                using (StreamWriter swSwitch = File.CreateText(switchPath))
+                {
+                    swSwitch.WriteLine("ChangeAt(Time),Position[X,Y],DirectionLeft");
+                    foreach(KeyValuePair<DateTime,(Switch, bool)> kvp in plan.ChangeSwitchAt)
+                    {
+                        swSwitch.WriteLine($"{kvp.Key.Hour}:{kvp.Key.Minute},[{kvp.Value.Item1.Position.X},{kvp.Value.Item1.Position.Y}], {kvp.Value.Item2}");
+                    }
+                }
+            }
         }
 
 
-
-
+        //public static TrainPlanner Save(TrainPlanner trainPlanner)
+        //{
+        //    return trainPlanner;
+        //}
 
         //    public void SaveTravelPlan(TrainPlanner trainPlanner)
         //{
