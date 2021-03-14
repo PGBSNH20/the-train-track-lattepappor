@@ -9,6 +9,7 @@
     <None Remove="Data\stations.txt" />
     <None Remove="Data\timetable.txt" />
     <None Remove="Data\trains.txt" />
+    <None Remove="Data\traintrack.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +23,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\trains.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\traintrack.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

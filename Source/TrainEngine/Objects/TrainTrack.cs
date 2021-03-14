@@ -9,7 +9,7 @@ namespace TrainEngine.Objects
     {
         public static char[][] TrackGrid;
         //This is the real grid without trains, we'll use this to refresh the train positions on TrackGrid.
-        public static char[][] READONLYGRID => FileIO.DeserializeTrainTrack(@"C:\Users\Sebastian\source\repos\the-train-track-lattepappor\Source\TrainEngine\Data\traintrack.txt");
+        public static char[][] READONLYGRID => FileIO.DeserializeTrainTrack(@"Data\traintrack.txt");
          
         public TrainTrack()
         { 
