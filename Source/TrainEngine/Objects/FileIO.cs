@@ -153,29 +153,40 @@ namespace TrainEngine.Objects
             }
         }
 
+        public static TrainPlanner LoadPlan(string path)
+        {
+            string timeTablePath = path + @"\timetables.txt";
+            string trainPath = path + @"\trains.txt";
+            string crossingPath = path + @"\crossing.txt";
 
-        //public static TrainPlanner Save(TrainPlanner trainPlanner)
-        //{
-        //    return trainPlanner;
-        //}
+            List<TimeTable> timeTableList = DeserializeTimeTables(timeTablePath, ',');
+            List<Train> train1 = DeserializeTrains(trainPath, ',');
 
-        //    public void SaveTravelPlan(TrainPlanner trainPlanner)
-        //{
-        //    trainPlanner = new();
+            // Deserialize crossing
+            string[] crossings;
 
-        //    var txt = new StringBuilder();
+            crossings = File.ReadAllLines(crossingPath);
+            string open = "";
+            string close = "";
+            int crossingId = 0;
+            bool something;
 
-        //    foreach (Product product in productList)
-        //    {
-        //        var title = product.Title;
-        //        var description = product.Description;
-        //        var price = product.Price;
-        //        var image = product.Image;
+            foreach (string lines in crossings.Skip(1))
+            {
+                string[] parts = lines.Split(',');
+                crossingId = int.Parse(parts[0]);
+                something = bool.Parse(parts[1]);
+                open = parts[2];
+                close = parts[3];
+            }
 
-        //        var newLine = string.Format("{0},{1},{2},{3}", title, description, price.ToString().Replace(',', '.'), image);
-        //        txt.AppendLine(newLine);
-        //    }
-        //    File.WriteAllText(@"C:\Windows\Temp\savedEditedProducts.csv", txt.ToString());
-        //}
+            LevelCrossing firstCrossing = new LevelCrossing() { Id = crossingId, IsOpen = true };
+            TrainPlanner trainPlan = new TrainPlanner(train1[0])
+                .CreateTimeTable(timeTableList)
+                .CrossingPlan(firstCrossing, open, close)
+                .ToPlan();
+
+            return trainPlan;
+        }
     }
 }
