@@ -31,7 +31,13 @@ namespace TrainEngine.Objects
 
     public class Switch
     {
-        public bool DirectionLeft = true;
+        public enum Direction
+        {
+            Left, 
+            Right, 
+            Forward
+        }
+        public Direction _Direction;
         public Position Position;
         public static List<Switch> Switches;
 
@@ -48,14 +54,14 @@ namespace TrainEngine.Objects
                     {
                         Switch @switch = new Switch()
                         {
-                            DirectionLeft = true,
+                            _Direction = Direction.Left,
                             Position = new Position(y, x)
                         };
                         result.Add(@switch);
                     }
                 }
             }
-            return new List<Switch>();
+            return result;
         }
     }
 
