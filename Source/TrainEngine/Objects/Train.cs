@@ -18,6 +18,7 @@ namespace TrainEngine.Objects
         private Position _myPos;
         public Position GetPosition => _myPos;
         public DirectionX DirectionX;
+        public bool IsStopped { get; set; }
 
         //Speed = Calculate how many seconds should take between every 1 step on the track
         //our imaginary distance is 250km between each station, divided by 15 steps between every station = each step is ~16km
@@ -31,12 +32,21 @@ namespace TrainEngine.Objects
 
         public Train(int id, string name, int topSpeed, bool operated)
         {
-            this._myPos = new Position(3, 0);
             this.Id = id;
             this.Name = name;
             this.TopSpeed = topSpeed;
             this.Operated = operated;
             this.DirectionX = DirectionX.East;
+        }
+
+        public void SetPlan(TrainPlanner plan)
+        {
+            this.Planner = plan;
+        }
+
+        public void SetStartPosition(Position pos)
+        {
+            this._myPos = pos;
         }
 
         //Start this trains movement on a new thread
@@ -45,12 +55,6 @@ namespace TrainEngine.Objects
             TrainThread = new Thread(this.BeginMove);
             TrainThread.Start();
         }
-
-        //these will be called from the mainthread (aka Mr. Carlos) to control the trains movement state
-        //Halts the train by disabling the internal timer
-        public void HaltTrain() => this.InternalClock.Enabled = false;
-        //resumes the train by enabling the internal timer
-        public void ResumeTrain() => this.InternalClock.Enabled = true;
 
         private void BeginMove()
         {
@@ -63,42 +67,89 @@ namespace TrainEngine.Objects
 
         private void MoveTrainEvent(Object src, ElapsedEventArgs e)
         {
-            //if(IsAtEndStation)
-            //{
-            //    //end station reached, internalclock no longer needed and reclaim memory from this thread
-            //    InternalClock.Stop();
-            //    InternalClock = null;
-            //    GC.Collect();
-            //    return;
-            //}
-
             int directionX = this.DirectionX == DirectionX.East ? 1 : -1;
-            int next = TrainTrack.TrackGrid[GetPosition.Y][GetPosition.X + directionX]; //Check 1 step infront of us
             int currentPosValue = TrainTrack.READONLYGRID[GetPosition.Y][GetPosition.X];
 
+            if ((_myPos.Y < TrainTrack.READONLYGRID.Length - 1 && _myPos.Y > 0) || _myPos.X == TrainTrack.READONLYGRID[_myPos.Y].Length - 1)
+            {
+                if (currentPosValue == (int)TrackIdentity.DiagonalRight)
+                {
+                    MoveXAxis(directionX);
+                    MoveYAxis(-1);
+                    return;
+                }
+                if (currentPosValue == (int)TrackIdentity.DiagonalLeft)
+                {
+                    MoveXAxis(directionX);
+                    MoveYAxis(1);
+                    return;
+                }
+            }
+            else
+            {
+                if (currentPosValue == (int)TrackIdentity.DiagonalRight || currentPosValue == (int)TrackIdentity.DiagonalLeft)
+                {
+                    MoveXAxis(directionX);
+                    return;
+                }
+            }
             //check if train is standing on a switch
             if(currentPosValue == (int)TrackIdentity.SwitchLeft || currentPosValue == (int)TrackIdentity.SwitchRight)
             {
-                int? directionY;
+                int directionY = 0;
                 //Find the switch we're currently positioned at and move up/down depending on its state
-                Switch currentSwitch = Switch.Switches.Find(x => x.Position.X == _myPos.X && x.Position.Y == _myPos.Y);
-                directionY = -1; //depending on state we want to move up or down on Y axis (+1 || -1)
+                Switch currentSwitch = Switch.Switches.First(x => x.Position.X == _myPos.X && x.Position.Y == _myPos.Y);
+                if(currentSwitch._Direction == Switch.Direction.Forward)
+                {
+                    directionY = 0;
+                }
+                else if(currentSwitch._Direction == Switch.Direction.Left)
+                {
+                    directionY = -1;
+                }
+                else if(currentSwitch._Direction == Switch.Direction.Right)
+                {
+                    directionY = 1;
+                }
                 //on switches we move diagonally 1 step (+1X, +1Y)
-                MoveYAxis(directionY ?? -1);
+                MoveYAxis(directionY);
                 MoveXAxis(directionX);
                 return;
             }
-            //check if we're standing on starting station, a normal track or a crossing and move 1 step on x axis
-            if(currentPosValue == (int)TrackIdentity.StartStation || currentPosValue == (int)TrackIdentity.Track || currentPosValue == (int)TrackIdentity.Crossing)
+            //check if we're standing on a normal track or a crossing and move 1 step on x axis
+            if(currentPosValue == (int)TrackIdentity.Track || currentPosValue == (int)TrackIdentity.Crossing)
             {
                 MoveXAxis(directionX);
                 return;
             }
             //check if we're standing on a station
-            if(currentPosValue == (int)TrackIdentity.Station1 || currentPosValue == (int)TrackIdentity.Station2 || 
+            if (currentPosValue == (int)TrackIdentity.Station1 || currentPosValue == (int)TrackIdentity.Station2 ||
                 currentPosValue == (int)TrackIdentity.Station3 || currentPosValue == (int)TrackIdentity.Station4)
             {
-                MoveXAxis(directionX);
+                //Find out my start station
+                int myStartStation = Planner.Table.First(x => x.ArrivalTime == null && x.TrainId == this.Id).StationId;
+                //Convert my pos int value to its char equivalent
+                char getChar = (char)currentPosValue;
+                //Parse my char station (ie '3') to an integer
+                int currentStation = int.Parse(getChar.ToString());
+                Station station = Mr_Carlos.stations.First(x => x.Id == currentStation);
+                //Get the departure time from my current station
+                DateTime? departure = Planner.Table.First(x => x.StationId == currentStation && x.TrainId == this.Id).DepartureTime;
+                if (Mr_Carlos.GlobalTime.Hour >= departure?.Hour && Mr_Carlos.GlobalTime.Minute >= departure?.Minute)
+                {
+                    ControllerLog.Content = $"{this.Name} departed from {station.Name}!";
+                    Mr_Carlos.TimeLine.Add($"[TIMELINE][{Mr_Carlos.GlobalTime.ToString("HH:mm")}]: {this.Name} departed from {station.Name}!");
+                    MoveXAxis(directionX);
+                }
+                else
+                {
+                    ControllerLog.Content = $"{this.Name} is stopped at {station.Name} until {departure?.ToString("HH:mm")}";
+                    string str = $"{this.Name} stopped at {station.Name}!";
+                    if (!Mr_Carlos.TimeLine.Any(x => x.Contains(str)))
+                    {
+                        Mr_Carlos.TimeLine.Add($"[TIMELINE][{Mr_Carlos.GlobalTime.ToString("HH:mm")}]: {str}");
+                    }
+                }
                 return;
             }
         }
@@ -127,6 +178,11 @@ namespace TrainEngine.Objects
         public override string ToString()
         {
             return $"{Y}, {X}";
+        }
+
+        public bool AreEqual(Position obj)
+        {
+            return this.X == obj.X && this.Y == obj.Y;
         }
     }
 

@@ -11,6 +11,8 @@ namespace TrainEngine.Utils
         Void = 32, //Space char int value = 32
         StartStation = '*',
         Track = '-',
+        DiagonalRight = '/',
+        DiagonalLeft = '\\',
         Crossing = '=',
         SwitchRight = '>',
         SwitchLeft = '<',
