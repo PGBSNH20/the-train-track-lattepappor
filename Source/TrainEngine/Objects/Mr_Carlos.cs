@@ -55,6 +55,7 @@ namespace TrainEngine.Objects
             Switch.Switches[1]._Direction = Switch.Direction.Forward;
 
             trains[0].Start();
+            trains[1].Start();
 
             AssignStartPosition(trains[0], planner);
             AssignStartPosition(trains[1], planner2);

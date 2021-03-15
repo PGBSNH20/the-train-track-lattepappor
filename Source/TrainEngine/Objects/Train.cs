@@ -128,13 +128,30 @@ namespace TrainEngine.Objects
             {
                 //Find out my start station
                 int myStartStation = Planner.Table.First(x => x.ArrivalTime == null && x.TrainId == this.Id).StationId;
+                int myEndStation = Planner.Table.First(x => x.DepartureTime == null && x.TrainId == this.Id).StationId;
                 //Convert my pos int value to its char equivalent
                 char getChar = (char)currentPosValue;
                 //Parse my char station (ie '3') to an integer
                 int currentStation = int.Parse(getChar.ToString());
                 Station station = Mr_Carlos.stations.First(x => x.Id == currentStation);
                 //Get the departure time from my current station
-                DateTime? departure = Planner.Table.First(x => x.StationId == currentStation && x.TrainId == this.Id).DepartureTime;
+                DateTime? departure = Planner.Table.FirstOrDefault(x => x.StationId == currentStation && x.TrainId == this.Id)?.DepartureTime ?? null;
+
+                if(currentStation == myEndStation)
+                {
+                    ControllerLog.Content = $"{this.Name} arrived at final destination ({station.Name})!";
+                    string str = $"{this.Name} arrived at its final destination: {station.Name}!";
+                    if (!Mr_Carlos.TimeLine.Any(x => x.Contains(str)))
+                    {
+                        Mr_Carlos.TimeLine.Add($"[TIMELINE][{Mr_Carlos.GlobalTime.ToString("HH:mm")}]: {str}");
+                    }
+                    return;
+
+                }
+                if(currentStation == 4 && departure != null)
+                {
+                    this.DirectionX = DirectionX.West;
+                }
                 if (Mr_Carlos.GlobalTime.Hour >= departure?.Hour && Mr_Carlos.GlobalTime.Minute >= departure?.Minute)
                 {
                     ControllerLog.Content = $"{this.Name} departed from {station.Name}!";
