@@ -14,6 +14,7 @@ namespace TrainEngine.Utils
     {
         public static string Content = string.Empty;
         private const string PATH = @"C:\Users\Sebastian\source\repos\the-train-track-lattepappor\Source\TrainEngine\Data\controllerlog.txt";
+        private static List<string> AlreadyLogged = new List<string>();
         public static void Log(string path, DateTime timestamp)
         {
             string hour = timestamp.ToString("HH:mm");
@@ -22,8 +23,9 @@ namespace TrainEngine.Utils
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(string.Join('\n', Mr_Carlos.TimeLine));
 
-            if (Content != string.Empty)
+            if (Content != string.Empty && !AlreadyLogged.Contains(Content))
             {
+                AlreadyLogged.Add(Content);
                 File.AppendAllText(PATH, $"[{hour}]: {Content}\n");
             }
             Console.ResetColor();

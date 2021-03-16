@@ -3,5 +3,5 @@ trainId, stationId, departure, arrival
 2,2,10:40,10:33
 2,4,null,10:59
 3,4,10:23,null
-3,3,10:55,10:53
-3,1,null,11:15
+3,3,11:05,10:59
+3,1,null,11:41

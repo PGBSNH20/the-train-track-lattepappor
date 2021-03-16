@@ -1,0 +1,13 @@
+[10:15]: Golden Arrow is stopped at Stonecro until 10:19
+[10:19]: Golden Arrow departed from Stonecro!
+[10:20]: Crossing is closing!
+[10:21]: Lapplandståget is stopped at Thielfic-In-Sladeno until 10:23
+[10:23]: Switch at position 3, 9 changed direction.
+[10:24]: Crossing is opening!
+[10:34]: Golden Arrow is stopped at Mount Juanceo until 10:40
+[10:38]: Switch at position 3, 27 changed direction.
+[10:40]: Golden Arrow departed from Mount Juanceo!
+[10:55]: Golden Arrow arrived at its final destination (Thielfic-In-Sladeno)!
+[10:59]: Lapplandståget is stopped at Grand Retro until 11:05
+[11:05]: Lapplandståget departed from Grand Retro!
+[11:41]: Lapplandståget arrived at its final destination (Stonecro)!

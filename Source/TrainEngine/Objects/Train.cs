@@ -4,6 +4,7 @@ using System.Threading;
 using System.Timers;
 using TrainEngine.Utils;
 using System.Linq;
+
 using Timer = System.Timers.Timer;
 
 namespace TrainEngine.Objects
@@ -70,18 +71,21 @@ namespace TrainEngine.Objects
             int directionX = this.DirectionX == DirectionX.East ? 1 : -1;
             int currentPosValue = TrainTrack.READONLYGRID[GetPosition.Y][GetPosition.X];
 
-            if ((_myPos.Y < TrainTrack.READONLYGRID.Length - 1 && _myPos.Y > 0) || _myPos.X == TrainTrack.READONLYGRID[_myPos.Y].Length - 1)
+            if ((_myPos.Y < TrainTrack.READONLYGRID.Length - 1 && _myPos.Y > 0) || 
+                _myPos.X == TrainTrack.READONLYGRID[_myPos.Y].Length - 1 && _myPos.Y != TrainTrack.READONLYGRID.Length - 1)
             {
                 if (currentPosValue == (int)TrackIdentity.DiagonalRight)
                 {
+                    int directionY = this.DirectionX == DirectionX.East ? -1 : 1;
                     MoveXAxis(directionX);
-                    MoveYAxis(-1);
+                    MoveYAxis(directionY);
                     return;
                 }
                 if (currentPosValue == (int)TrackIdentity.DiagonalLeft)
                 {
+                    int directionY = this.DirectionX == DirectionX.East ? 1 : -1;
                     MoveXAxis(directionX);
-                    MoveYAxis(1);
+                    MoveYAxis(directionY);
                     return;
                 }
             }
@@ -90,6 +94,10 @@ namespace TrainEngine.Objects
                 if (currentPosValue == (int)TrackIdentity.DiagonalRight || currentPosValue == (int)TrackIdentity.DiagonalLeft)
                 {
                     MoveXAxis(directionX);
+                    if(TrainTrack.READONLYGRID[_myPos.Y][_myPos.X + directionX] == (char)TrackIdentity.Void)
+                    {
+                        MoveYAxis(-1);
+                    }
                     return;
                 }
             }
@@ -139,12 +147,13 @@ namespace TrainEngine.Objects
 
                 if(currentStation == myEndStation)
                 {
-                    ControllerLog.Content = $"{this.Name} arrived at final destination ({station.Name})!";
+                    ControllerLog.Content = $"{this.Name} arrived at its final destination ({station.Name})!";
                     string str = $"{this.Name} arrived at its final destination: {station.Name}!";
                     if (!Mr_Carlos.TimeLine.Any(x => x.Contains(str)))
                     {
                         Mr_Carlos.TimeLine.Add($"[TIMELINE][{Mr_Carlos.GlobalTime.ToString("HH:mm")}]: {str}");
                     }
+                    InternalClock.Enabled = false;
                     return;
 
                 }
@@ -157,6 +166,7 @@ namespace TrainEngine.Objects
                     ControllerLog.Content = $"{this.Name} departed from {station.Name}!";
                     Mr_Carlos.TimeLine.Add($"[TIMELINE][{Mr_Carlos.GlobalTime.ToString("HH:mm")}]: {this.Name} departed from {station.Name}!");
                     MoveXAxis(directionX);
+                    return;
                 }
                 else
                 {

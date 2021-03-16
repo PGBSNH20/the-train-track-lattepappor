@@ -19,7 +19,7 @@ namespace TrainEngine.Objects
         public List<TrainPlanner> plans = new List<TrainPlanner>();
 
         private Timer ObserverTimer;
-        public static DateTime GlobalTime = new DateTime().AddHours(10).AddMinutes(15);
+        public static DateTime GlobalTime = DateTime.Parse("10:15");
 
         public void BeginObserving()
         {
@@ -35,16 +35,16 @@ namespace TrainEngine.Objects
 
             TrainPlanner planner = new TrainPlanner(trains[0])
                     .CreateTimeTable(timeTables)
-                    .SwitchPlan(Switch.Switches[0], "10:45", Switch.Direction.Left)
-                    .CrossingPlan("10:41", "10:44")
-                    .SwitchPlan(Switch.Switches[1], "11:02", Switch.Direction.Forward)
+                    .SwitchPlan(Switch.Switches[0], "10:23", Switch.Direction.Left)
+                    .CrossingPlan("10:20", "10:24")
+                    .SwitchPlan(Switch.Switches[1], "10:41", Switch.Direction.Forward)
                     .ToPlan();
 
             TrainPlanner planner2 = new TrainPlanner(trains[1])
                     .CreateTimeTable(timeTables)
-                    .SwitchPlan(Switch.Switches[0], "10:45", Switch.Direction.Left)
-                    .CrossingPlan("11:11", "11:14")
-                    .SwitchPlan(Switch.Switches[1], "11:02", Switch.Direction.Right)
+                    .SwitchPlan(Switch.Switches[1], "10:38", Switch.Direction.Right)
+                    .CrossingPlan("11:28", "11:34")
+                    .SwitchPlan(Switch.Switches[0], "11:20", Switch.Direction.Forward)
                     .ToPlan();
 
             plans.Add(planner);
@@ -52,10 +52,7 @@ namespace TrainEngine.Objects
             trains[0].SetPlan(planner);
             trains[1].SetPlan(planner2);
 
-            Switch.Switches[1]._Direction = Switch.Direction.Forward;
-
-            trains[0].Start();
-            trains[1].Start();
+            trains.ForEach(x => x.Start());
 
             AssignStartPosition(trains[0], planner);
             AssignStartPosition(trains[1], planner2);
@@ -63,6 +60,8 @@ namespace TrainEngine.Objects
 
         private void UpdateConsole(Object src, ElapsedEventArgs e)
         {
+            CheckCrossingPlan();
+            CheckSwitchPlan();
             Console.Clear();
             TrainTrack.RefreshTrack();
 
@@ -82,6 +81,12 @@ namespace TrainEngine.Objects
             Console.WriteLine(track);
             ControllerLog.Log(@"C:\Users\Sebastian\source\repos\the-train-track-lattepappor\Source\TrainEngine\Data\controllerlog.txt", GlobalTime);
             GlobalTime = GlobalTime.AddMinutes(1);
+            if (GlobalTime >= DateTime.Parse("11:42"))
+            {
+                ObserverTimer.Close();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\nAll trains have arrived at their final destination. Terminating program :)");
+            }
         }
 
         private void AssignStartPosition(Train train, TrainPlanner planner)
@@ -101,6 +106,31 @@ namespace TrainEngine.Objects
                     }
                 }
                 if (finished) break;
+            }
+        }
+
+        private void CheckCrossingPlan()
+        {
+            if(plans.Any(x => x.CrossingCloseAt == GlobalTime))
+            {
+                ControllerLog.Content = $"Crossing is closing!";
+                TimeLine.Add($"[TIMELINE][{GlobalTime.ToString("HH:mm")}]: Crossing closed!");
+            }
+            if(plans.Any(x => x.CrossingOpenAt== GlobalTime))
+            {
+                ControllerLog.Content = $"Crossing is opening!";
+                TimeLine.Add($"[TIMELINE][{GlobalTime.ToString("HH:mm")}]: Crossing opened!");
+            }
+        }
+
+        private void CheckSwitchPlan()
+        {
+            if (plans.Any(x => x.ChangeSwitchAt.ContainsKey(GlobalTime)))
+            {
+                TrainPlanner planner = plans.Where(x => x.ChangeSwitchAt.ContainsKey(GlobalTime)).First();
+                planner.ChangeSwitchAt[GlobalTime].Item1._Direction = planner.ChangeSwitchAt[GlobalTime].Item2;
+                ControllerLog.Content = $"Switch at position {planner.ChangeSwitchAt[GlobalTime].Item1.Position.ToString()} changed direction.";
+                TimeLine.Add($"[TIMELINE][{GlobalTime.ToString("HH:mm")}]: Switch at position {planner.ChangeSwitchAt[GlobalTime].Item1.Position.ToString()} changed direction.");
             }
         }
 

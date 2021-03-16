@@ -155,40 +155,40 @@ namespace TrainEngine.Objects
             }
         }
 
-        public static TrainPlanner LoadPlan(string path)
-        {
-            string timeTablePath = path + @"\timetables.txt";
-            string trainPath = path + @"\trains.txt";
-            string crossingPath = path + @"\crossing.txt";
+        //public static TrainPlanner LoadPlan(string path)
+        //{
+        //    string timeTablePath = path + @"\timetables.txt";
+        //    string trainPath = path + @"\trains.txt";
+        //    string crossingPath = path + @"\crossing.txt";
 
-            List<TimeTable> timeTableList = DeserializeTimeTables(timeTablePath, ',');
-            List<Train> train1 = DeserializeTrains(trainPath, ',');
+        //    List<TimeTable> timeTableList = DeserializeTimeTables(timeTablePath, ',');
+        //    List<Train> train1 = DeserializeTrains(trainPath, ',');
 
-            // Deserialize crossing
-            string[] crossings;
+        //    // Deserialize crossing
+        //    string[] crossings;
 
-            crossings = File.ReadAllLines(crossingPath);
-            string open = "";
-            string close = "";
-            int crossingId = 0;
-            bool something;
+        //    crossings = File.ReadAllLines(crossingPath);
+        //    string open = "";
+        //    string close = "";
+        //    int crossingId = 0;
+        //    bool something;
 
-            foreach (string lines in crossings.Skip(1))
-            {
-                string[] parts = lines.Split(',');
-                crossingId = int.Parse(parts[0]);
-                something = bool.Parse(parts[1]);
-                open = parts[2];
-                close = parts[3];
-            }
+        //    foreach (string lines in crossings.Skip(1))
+        //    {
+        //        string[] parts = lines.Split(',');
+        //        crossingId = int.Parse(parts[0]);
+        //        something = bool.Parse(parts[1]);
+        //        open = parts[2];
+        //        close = parts[3];
+        //    }
 
-            LevelCrossing firstCrossing = new LevelCrossing() { Id = crossingId, IsOpen = true };
-            TrainPlanner trainPlan = new TrainPlanner(train1[0])
-                .CreateTimeTable(timeTableList)
-                .CrossingPlan(open, close)
-                .ToPlan();
+        //    //LevelCrossing firstCrossing = new LevelCrossing() { Id = crossingId, IsOpen = true };
+        //    //TrainPlanner trainPlan = new TrainPlanner(train1[0])
+        //    //    .CreateTimeTable(timeTableList)
+        //    //    .CrossingPlan(open, close)
+        //    //    .ToPlan();
 
-            return trainPlan;
-        }
+        //    return trainPlan;
+        //}
     }
 }

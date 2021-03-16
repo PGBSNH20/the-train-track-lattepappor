@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SavedTravelPlans\**" />
+    <EmbeddedResource Remove="SavedTravelPlans\**" />
+    <None Remove="SavedTravelPlans\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Data\controllerlog.txt" />
     <None Remove="Data\passengers.txt" />
     <None Remove="Data\stations.txt" />
@@ -32,10 +38,6 @@
     <Content Include="Data\traintrack.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SavedTravelPlans\" />
   </ItemGroup>
 
 </Project>
