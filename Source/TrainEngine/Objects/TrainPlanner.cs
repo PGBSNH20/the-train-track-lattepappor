@@ -7,9 +7,8 @@ namespace TrainEngine.Objects
     public class TrainPlanner : ITrainPlanner
     {
         public List<TimeTable> Table = new();
-        public Dictionary<DateTime, (Switch, bool)> ChangeSwitchAt = new();
+        public Dictionary<DateTime, (Switch, Switch.Direction)> ChangeSwitchAt = new();
         public Train Train { get; set; }
-        public LevelCrossing LevelCrossing { get; set; }
         public DateTime CrossingOpenAt { get; set; }
         public DateTime CrossingCloseAt { get; set; }
         public TrainPlanner(Train train)
@@ -23,17 +22,16 @@ namespace TrainEngine.Objects
             return this;
         }
 
-        public ITrainPlanner CrossingPlan(LevelCrossing levelCrossing, string close, string open)
+        public ITrainPlanner CrossingPlan(string close, string open)
         {
-            LevelCrossing = levelCrossing;
             CrossingCloseAt = DateTime.Parse(close);
             CrossingOpenAt = DateTime.Parse(open);
             return this;
         }
 
-        public ITrainPlanner SwitchPlan(Switch trackSwitch, string time,  bool directionLeft)
+        public ITrainPlanner SwitchPlan(Switch trackSwitch, string time,  Switch.Direction direction)
         {
-            ChangeSwitchAt.Add(DateTime.Parse(time), (trackSwitch, directionLeft));
+            ChangeSwitchAt.Add(DateTime.Parse(time), (trackSwitch, direction));
             return this;
         }
 

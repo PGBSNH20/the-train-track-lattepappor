@@ -35,16 +35,16 @@ namespace TrainEngine.Objects
 
             TrainPlanner planner = new TrainPlanner(trains[0])
                     .CreateTimeTable(timeTables)
-                    .SwitchPlan(Switch.Switches[0], "10:45", true)
-                    .CrossingPlan(new LevelCrossing(), "10:41", "10:44")
-                    .SwitchPlan(Switch.Switches[1], "11:02", true)
+                    .SwitchPlan(Switch.Switches[0], "10:45", Switch.Direction.Left)
+                    .CrossingPlan("10:41", "10:44")
+                    .SwitchPlan(Switch.Switches[1], "11:02", Switch.Direction.Forward)
                     .ToPlan();
 
             TrainPlanner planner2 = new TrainPlanner(trains[1])
                     .CreateTimeTable(timeTables)
-                    .SwitchPlan(Switch.Switches[0], "10:45", true)
-                    .CrossingPlan(new LevelCrossing(), "11:11", "11:14")
-                    .SwitchPlan(Switch.Switches[1], "11:02", true)
+                    .SwitchPlan(Switch.Switches[0], "10:45", Switch.Direction.Left)
+                    .CrossingPlan("11:11", "11:14")
+                    .SwitchPlan(Switch.Switches[1], "11:02", Switch.Direction.Right)
                     .ToPlan();
 
             plans.Add(planner);

@@ -129,26 +129,28 @@ namespace TrainEngine.Objects
                             $"{(timeTable.DepartureTime != null ? $"{timeTable.DepartureTime.Value.Hour}:{timeTable.DepartureTime.Value.Minute}" : "null")}," +
                             $"{(timeTable.ArrivalTime != null ? $"{timeTable.ArrivalTime.Value.Hour}:{timeTable.ArrivalTime.Value.Minute}" : "null")}");
                     }
+                    swTable.Close();
                 }
                 using (StreamWriter swTrain = File.CreateText(trainPath))
                 {
                     swTrain.WriteLine("Id,Name,MaxSpeed,Operated");
                     swTrain.WriteLine($"{plan.Train.Id},{plan.Train.Name},{plan.Train.TopSpeed},{plan.Train.Operated}");
+                    swTrain.Close();
                 }
                 using (StreamWriter swCrossing = File.CreateText(crossingPath))
                 {
-                    swCrossing.WriteLine("Id,IsOpen,CloseAt,OpenAt");
-                    swCrossing.WriteLine($"{plan.LevelCrossing.Id}, {plan.LevelCrossing.IsOpen}," +
-                        $"{plan.CrossingCloseAt.Hour}:{plan.CrossingCloseAt.Minute}," +
-                        $"{plan.CrossingOpenAt.Hour}:{plan.CrossingOpenAt.Minute}");
+                    swCrossing.WriteLine("CloseAt,OpenAt");
+                    swCrossing.WriteLine($"{plan.CrossingCloseAt.Hour}:{plan.CrossingCloseAt.Minute},{plan.CrossingOpenAt.Hour}:{plan.CrossingOpenAt.Minute}");
+                    swCrossing.Close();
                 }
                 using (StreamWriter swSwitch = File.CreateText(switchPath))
                 {
-                    swSwitch.WriteLine("ChangeAt(Time),Position[X,Y],DirectionLeft");
-                    foreach(KeyValuePair<DateTime,(Switch, bool)> kvp in plan.ChangeSwitchAt)
+                    swSwitch.WriteLine("ChangeAt(Time),Position[X,Y],Direction");
+                    foreach(KeyValuePair<DateTime,(Switch, Switch.Direction)> kvp in plan.ChangeSwitchAt)
                     {
                         swSwitch.WriteLine($"{kvp.Key.Hour}:{kvp.Key.Minute},[{kvp.Value.Item1.Position.X},{kvp.Value.Item1.Position.Y}], {kvp.Value.Item2}");
                     }
+                    swSwitch.Close();
                 }
             }
         }
@@ -183,7 +185,7 @@ namespace TrainEngine.Objects
             LevelCrossing firstCrossing = new LevelCrossing() { Id = crossingId, IsOpen = true };
             TrainPlanner trainPlan = new TrainPlanner(train1[0])
                 .CreateTimeTable(timeTableList)
-                .CrossingPlan(firstCrossing, open, close)
+                .CrossingPlan(open, close)
                 .ToPlan();
 
             return trainPlan;

@@ -22,13 +22,6 @@ namespace TrainEngine.Objects
             TrackGrid = READONLYGRID;
         }
     }
-
-    public class LevelCrossing
-    {
-        public int Id;
-        public bool IsOpen = true;
-    }
-
     public class Switch
     {
         public enum Direction
