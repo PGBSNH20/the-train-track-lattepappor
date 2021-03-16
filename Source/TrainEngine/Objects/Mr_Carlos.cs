@@ -41,7 +41,7 @@ namespace TrainEngine.Objects
                     .CreateTimeTable(timeTables)
                     .SwitchPlan(Switch.Switches[0], "10:23", Switch.Direction.Left)
                     .CrossingPlan("10:20", "10:24")
-                    .SwitchPlan(Switch.Switches[1], "10:41", Switch.Direction.Forward)
+                    .SwitchPlan(Switch.Switches[1], "10:44", Switch.Direction.Forward)
                     .ToPlan();
 
             TrainPlanner planner2 = new TrainPlanner(trains[1])
