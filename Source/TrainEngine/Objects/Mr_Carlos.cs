@@ -23,14 +23,18 @@ namespace TrainEngine.Objects
 
         public void BeginObserving()
         {
+            //Assign switches with their grid positions
             Switch.Switches = Switch.GetSwitches();
             TrainTrack.TrackGrid = TrainTrack.READONLYGRID;
+
+            //this will be our console and position refresh rate (once every 0.5s)
             ObserverTimer = new Timer(500);
             ObserverTimer.Elapsed += UpdateConsole;
             ObserverTimer.AutoReset = true;
             ObserverTimer.Enabled = true;
             ObserverTimer.Start();
 
+            //Remove all the trains that aren't being operated from our list
             trains.RemoveAll(x => !x.Operated);
 
             TrainPlanner planner = new TrainPlanner(trains[0])
@@ -47,19 +51,24 @@ namespace TrainEngine.Objects
                     .SwitchPlan(Switch.Switches[0], "11:20", Switch.Direction.Forward)
                     .ToPlan();
 
+
             plans.Add(planner);
             plans.Add(planner2);
+            //Assign the plans to their respective trains
             trains[0].SetPlan(planner);
             trains[1].SetPlan(planner2);
 
-            trains.ForEach(x => x.Start());
-
+            //Assign the trains start positions based on their start stations position
             AssignStartPosition(trains[0], planner);
             AssignStartPosition(trains[1], planner2);
+
+            //Start each train on a separate thread
+            trains.ForEach(x => x.Start());
         }
 
         private void UpdateConsole(Object src, ElapsedEventArgs e)
         {
+            //Check if any switches or crossings should change on the current hour:minute
             CheckCrossingPlan();
             CheckSwitchPlan();
             Console.Clear();
@@ -71,6 +80,7 @@ namespace TrainEngine.Objects
                 TrainTrack.TrackGrid[t.GetPosition.Y][t.GetPosition.X] = 'T';
             }
 
+            //Convert the 2d char array into a full string to print in the console
             string[] rows = new string[TrainTrack.TrackGrid.Length]; //Make a string array based on the trackgrids Y-axis length
             for (int i = 0; i < rows.Length; i++)
             {
@@ -81,6 +91,8 @@ namespace TrainEngine.Objects
             Console.WriteLine(track);
             ControllerLog.Log(@"C:\Users\Sebastian\source\repos\the-train-track-lattepappor\Source\TrainEngine\Data\controllerlog.txt", GlobalTime);
             GlobalTime = GlobalTime.AddMinutes(1);
+
+            //If the current time is >= 11:42 all trains SHOULD have arrived at their final destination and we should stop observing the train states.
             if (GlobalTime >= DateTime.Parse("11:42"))
             {
                 ObserverTimer.Close();
@@ -91,9 +103,11 @@ namespace TrainEngine.Objects
 
         private void AssignStartPosition(Train train, TrainPlanner planner)
         {
+            //Find the start station ID 
             int StartStation = planner.Table.Where(x => x.ArrivalTime == null).First().StationId;
             bool finished = false;
 
+            //Loop through the grid to find the YX position of the startstation ID
             for (int y = 0; y < TrainTrack.READONLYGRID.Length; y++)
             {
                 for (int x = 0; x < TrainTrack.READONLYGRID[y].Length; x++)
@@ -116,7 +130,7 @@ namespace TrainEngine.Objects
                 ControllerLog.Content = $"Crossing is closing!";
                 TimeLine.Add($"[TIMELINE][{GlobalTime.ToString("HH:mm")}]: Crossing closed!");
             }
-            if(plans.Any(x => x.CrossingOpenAt== GlobalTime))
+            if(plans.Any(x => x.CrossingOpenAt == GlobalTime))
             {
                 ControllerLog.Content = $"Crossing is opening!";
                 TimeLine.Add($"[TIMELINE][{GlobalTime.ToString("HH:mm")}]: Crossing opened!");
@@ -138,6 +152,7 @@ namespace TrainEngine.Objects
         {
             Dictionary<Station, Position> result = new Dictionary<Station, Position>();
 
+            //loop through the track grid and find all the stations (they're the only values that are numerical)
             for(int y = 0; y < TrainTrack.READONLYGRID.Length; y++)
             {
                 for(int x = 0; x < TrainTrack.READONLYGRID[y].Length; x++)

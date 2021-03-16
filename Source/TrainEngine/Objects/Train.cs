@@ -15,11 +15,9 @@ namespace TrainEngine.Objects
         public string Name { get; set; }
         public int TopSpeed { get; set; }
         public bool Operated { get; set; }
-        public bool IsAtEndStation { get; set; }
         private Position _myPos;
         public Position GetPosition => _myPos;
         public DirectionX DirectionX;
-        public bool IsStopped { get; set; }
 
         //Speed = Calculate how many seconds should take between every 1 step on the track
         //our imaginary distance is 250km between each station, divided by 15 steps between every station = each step is ~16km
@@ -59,7 +57,9 @@ namespace TrainEngine.Objects
 
         private void BeginMove()
         {
+            //Start our timer with refresh rate based on our speed * 300
             InternalClock = new Timer((int)(Speed * 300));
+            //We want our train to move on every x milliseconds so each train has a varying speed 
             InternalClock.Elapsed += MoveTrainEvent;
             InternalClock.AutoReset = true;
             InternalClock.Enabled = true;
@@ -68,14 +68,18 @@ namespace TrainEngine.Objects
 
         private void MoveTrainEvent(Object src, ElapsedEventArgs e)
         {
+            //Check if we should go left or right on the X axis (East = +1X and West = -1X)
             int directionX = this.DirectionX == DirectionX.East ? 1 : -1;
+            //Get the int value of the char we're currently positioned at
             int currentPosValue = TrainTrack.READONLYGRID[GetPosition.Y][GetPosition.X];
 
+            //check if we're not at the end of Y or X (ie safety measure so we dont go -1Y if we're currently at 0Y as this would put us at a negative index and crash the program)
             if ((_myPos.Y < TrainTrack.READONLYGRID.Length - 1 && _myPos.Y > 0) || 
                 _myPos.X == TrainTrack.READONLYGRID[_myPos.Y].Length - 1 && _myPos.Y != TrainTrack.READONLYGRID.Length - 1)
             {
                 if (currentPosValue == (int)TrackIdentity.DiagonalRight)
                 {
+                    //If we're eastbound we want to move upward on / signs, if we're westbound we want to move downward on \ signs (aka -1Y/+1Y)
                     int directionY = this.DirectionX == DirectionX.East ? -1 : 1;
                     MoveXAxis(directionX);
                     MoveYAxis(directionY);
@@ -83,6 +87,7 @@ namespace TrainEngine.Objects
                 }
                 if (currentPosValue == (int)TrackIdentity.DiagonalLeft)
                 {
+                    //If we're eastbound we want to move downward on \ signs, if we're westbound we want to move upward on \ signs (aka +1Y/-1Y)
                     int directionY = this.DirectionX == DirectionX.East ? 1 : -1;
                     MoveXAxis(directionX);
                     MoveYAxis(directionY);
@@ -94,7 +99,8 @@ namespace TrainEngine.Objects
                 if (currentPosValue == (int)TrackIdentity.DiagonalRight || currentPosValue == (int)TrackIdentity.DiagonalLeft)
                 {
                     MoveXAxis(directionX);
-                    if(TrainTrack.READONLYGRID[_myPos.Y][_myPos.X + directionX] == (char)TrackIdentity.Void)
+                    //if we're at the end of our X axis we should move up or down since moving only on X would this train out of bounds
+                    if (TrainTrack.READONLYGRID[_myPos.Y][_myPos.X + directionX] == (char)TrackIdentity.Void)
                     {
                         MoveYAxis(-1);
                     }
@@ -109,17 +115,17 @@ namespace TrainEngine.Objects
                 Switch currentSwitch = Switch.Switches.First(x => x.Position.X == _myPos.X && x.Position.Y == _myPos.Y);
                 if(currentSwitch._Direction == Switch.Direction.Forward)
                 {
-                    directionY = 0;
+                    directionY = 0; //Dont move on Y-axis if switch is set to forward
                 }
                 else if(currentSwitch._Direction == Switch.Direction.Left)
                 {
-                    directionY = -1;
+                    directionY = -1; //Move up (left) on Y axis if it's set to left
                 }
                 else if(currentSwitch._Direction == Switch.Direction.Right)
                 {
-                    directionY = 1;
+                    directionY = 1; //Move down (right) on Y axis if it's set to right
                 }
-                //on switches we move diagonally 1 step (+1X, +1Y)
+                //on switches we move diagonally 1 step (+1X, +nY)
                 MoveYAxis(directionY);
                 MoveXAxis(directionX);
                 return;
@@ -145,6 +151,7 @@ namespace TrainEngine.Objects
                 //Get the departure time from my current station
                 DateTime? departure = Planner.Table.FirstOrDefault(x => x.StationId == currentStation && x.TrainId == this.Id)?.DepartureTime ?? null;
 
+                //If our current station is our end station we stop our clock since we should no longer move anywhere
                 if(currentStation == myEndStation)
                 {
                     ControllerLog.Content = $"{this.Name} arrived at its final destination ({station.Name})!";
@@ -157,10 +164,12 @@ namespace TrainEngine.Objects
                     return;
 
                 }
+                //If the station is station 4 and we have to depart from this station we need to change direction to West (aka -X to go "backwards")
                 if(currentStation == 4 && departure != null)
                 {
                     this.DirectionX = DirectionX.West;
                 }
+                //if global time is more or equal to our departure time we need to leave the station
                 if (Mr_Carlos.GlobalTime.Hour >= departure?.Hour && Mr_Carlos.GlobalTime.Minute >= departure?.Minute)
                 {
                     ControllerLog.Content = $"{this.Name} departed from {station.Name}!";
@@ -168,6 +177,7 @@ namespace TrainEngine.Objects
                     MoveXAxis(directionX);
                     return;
                 }
+                //else we just dont move at all and stay on our station until its time to leave
                 else
                 {
                     ControllerLog.Content = $"{this.Name} is stopped at {station.Name} until {departure?.ToString("HH:mm")}";
@@ -202,11 +212,12 @@ namespace TrainEngine.Objects
             this.Y = y;
             this.X = x;
         }
+        //Override ToString to display Y and X values
         public override string ToString()
         {
             return $"{Y}, {X}";
         }
-
+        //Comparer to see if the X and Y values are equal in two different instances
         public bool AreEqual(Position obj)
         {
             return this.X == obj.X && this.Y == obj.Y;

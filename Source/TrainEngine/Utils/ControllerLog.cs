@@ -20,9 +20,12 @@ namespace TrainEngine.Utils
             string hour = timestamp.ToString("HH:mm");
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"[Mr_Carlos][{hour}]: {Content}\n");
+
             Console.ForegroundColor = ConsoleColor.Yellow;
+            //Print the timeline in console
             Console.WriteLine(string.Join('\n', Mr_Carlos.TimeLine));
 
+            //Only log unique events in the controllerlog.txt
             if (Content != string.Empty && !AlreadyLogged.Contains(Content))
             {
                 AlreadyLogged.Add(Content);
