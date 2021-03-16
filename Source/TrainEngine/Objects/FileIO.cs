@@ -155,40 +155,70 @@ namespace TrainEngine.Objects
             }
         }
 
-        //public static TrainPlanner LoadPlan(string path)
-        //{
-        //    string timeTablePath = path + @"\timetables.txt";
-        //    string trainPath = path + @"\trains.txt";
-        //    string crossingPath = path + @"\crossing.txt";
+        public static TrainPlanner LoadPlan(string path)
+        {
+            string timeTablePath = @"C:\Windows\Temp\" + path + @"\timetables.txt";
+            string trainPath = @"C:\Windows\Temp\" + path + @"\trains.txt";
+            string crossingPath = @"C:\Windows\Temp\" + path + @"\crossing.txt";
+            string switchPath = @"C:\Windows\Temp\" + path + @"\switch.txt";
 
-        //    List<TimeTable> timeTableList = DeserializeTimeTables(timeTablePath, ',');
-        //    List<Train> train1 = DeserializeTrains(trainPath, ',');
+            List<TimeTable> timeTableList = DeserializeTimeTables(timeTablePath, ',');
+            List<Train> train1 = DeserializeTrains(trainPath, ',');
 
-        //    // Deserialize crossing
-        //    string[] crossings;
+            // Deserialize crossing
+            string[] crossings;
 
-        //    crossings = File.ReadAllLines(crossingPath);
-        //    string open = "";
-        //    string close = "";
-        //    int crossingId = 0;
-        //    bool something;
+            crossings = File.ReadAllLines(crossingPath);
+            string openAt = String.Empty;
+            string closeAt = String.Empty;
+            //int crossingId = 0;
+            //bool something;
 
-        //    foreach (string lines in crossings.Skip(1))
-        //    {
-        //        string[] parts = lines.Split(',');
-        //        crossingId = int.Parse(parts[0]);
-        //        something = bool.Parse(parts[1]);
-        //        open = parts[2];
-        //        close = parts[3];
-        //    }
+            foreach (string lines in crossings.Skip(1))
+            {
+                string[] parts = lines.Split(',');
+                openAt = parts[0];
+                closeAt = parts[1];
+            }
 
-        //    //LevelCrossing firstCrossing = new LevelCrossing() { Id = crossingId, IsOpen = true };
-        //    //TrainPlanner trainPlan = new TrainPlanner(train1[0])
-        //    //    .CreateTimeTable(timeTableList)
-        //    //    .CrossingPlan(open, close)
-        //    //    .ToPlan();
+            // Deserialize Switches
+            string[] switches;
+            switches = File.ReadAllLines(switchPath);
+            List<string> dateTime = new List<string>();
+            List<Switch> tempSwitch = new List<Switch>();
+            List<Switch.Direction> directions = new List<Switch.Direction>();
 
-        //    return trainPlan;
-        //}
+            foreach (string lines in switches.Skip(1))
+            {
+                string[] parts = lines.Split(',');
+                string[] positionXY = parts[1].Split(':');
+                Position position = new Position(int.Parse(positionXY[1]), int.Parse(positionXY[0]));
+                dateTime.Add(parts[0]);
+                if (parts[2] == "Left")
+                {
+                    directions.Add(Switch.Direction.Left);
+                }
+                else if (parts[2] == "Forward")
+                {
+                    directions.Add(Switch.Direction.Forward);
+                }
+                else
+                {
+                    directions.Add(Switch.Direction.Right);
+                }
+                tempSwitch.Add(Switch.Switches.Where(x => x.Position.X == position.X).First());
+            }
+
+
+            // Create TrainPlanner
+            TrainPlanner trainPlan = new TrainPlanner(train1[0])
+                .CreateTimeTable(timeTableList)
+                .CrossingPlan(openAt, closeAt)
+                .SwitchPlan(tempSwitch[0], dateTime[0], directions[0])
+                .SwitchPlan(tempSwitch[1], dateTime[1], directions[1])
+                .ToPlan();
+
+            return trainPlan;
+        }
     }
 }
