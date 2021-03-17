@@ -148,7 +148,7 @@ namespace TrainEngine.Objects
                     swSwitch.WriteLine("ChangeAt(Time),Position[X,Y],Direction");
                     foreach(KeyValuePair<DateTime,(Switch, Switch.Direction)> kvp in plan.ChangeSwitchAt)
                     {
-                        swSwitch.WriteLine($"{kvp.Key.Hour}:{kvp.Key.Minute},[{kvp.Value.Item1.Position.X},{kvp.Value.Item1.Position.Y}], {kvp.Value.Item2}");
+                        swSwitch.WriteLine($"{kvp.Key.Hour}:{kvp.Key.Minute},{kvp.Value.Item1.Position.X}:{kvp.Value.Item1.Position.Y}, {kvp.Value.Item2}");
                     }
                     swSwitch.Close();
                 }
